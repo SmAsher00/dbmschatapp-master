@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
+import { buildApiUrl } from "../utils/api";
 
 const useGetConversations = () => {
 	const [loading, setLoading] = useState(true);
@@ -9,16 +10,14 @@ const useGetConversations = () => {
 		const getConversations = async () => {
 			setLoading(true);
 			try {
-				const res = await fetch("/api/message/users", {
+				const res = await fetch(buildApiUrl("/api/message/users"), {
 					credentials: "include",
 				});
 				
+				const data = await res.json().catch(() => null);
 				if (!res.ok) {
-					const errorData = await res.json().catch(() => ({}));
-					throw new Error(errorData?.message || errorData?.error || `Failed to load users: ${res.status}`);
+					throw new Error(data?.message || data?.error || `Failed to load users: ${res.status}`);
 				}
-				
-				const data = await res.json();
 				
 				// Ensure data is an array
 				if (Array.isArray(data)) {
