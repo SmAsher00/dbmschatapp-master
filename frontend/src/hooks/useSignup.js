@@ -21,11 +21,13 @@ const useSignup = () => {
 
 			const data = await safeParseJSON(res);
 			if (!res.ok) {
-				throw new Error(data?.message || data?.error || "Signup failed");
+				console.error("Signup error:", data);
+				throw new Error(data?.message || data?.error || `Signup failed: ${res.status} ${res.statusText}`);
 			}
 			localStorage.setItem("chat-user", JSON.stringify(data));
 			setAuthUser(data);
 		} catch (error) {
+			console.error("Signup catch error:", error);
 			toast.error(error.message);
 		} finally {
 			setLoading(false);
